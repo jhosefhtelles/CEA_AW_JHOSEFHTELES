@@ -5,6 +5,11 @@
 name: "cea_aw"
 version: "1.0.0"
 
+flags:
+  use_managed_iceberg: True
+  use_concurrent_microbatch: True
+  use_materialization_v2: True
+
 # This setting configures which "profile" dbt uses for this project.
 profile: "cea_aw"
 

@@ -71,3 +71,10 @@ models:
               arguments:
                 to: ref('d_clientes')
                 field: sk_cliente
+      - name: valor_bruto
+        tests:
+          - verifica_soma_vendas_2011:
+              config:
+                severity: warn
+              arguments:
+                expected_value: 12646112.16
