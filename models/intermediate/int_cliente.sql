@@ -47,6 +47,7 @@ with
         from latest_order_by_customer
         where rn = 1
     )
+    
 select
     customer.customerid
     , cast(customer.personid as bigint) as personid

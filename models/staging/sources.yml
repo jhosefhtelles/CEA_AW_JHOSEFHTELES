@@ -26,3 +26,7 @@ sources:
         description: "Cadastro de paises e regioes."
       - name: production_product
         description: "Cadastro de produtos."
+      - name: production_productcategory
+        description: "Categoria de produtos."
+      - name: production_productsubcategory
+        description: "Subcategoria de produtos."

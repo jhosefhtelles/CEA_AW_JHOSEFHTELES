@@ -116,3 +116,29 @@ models:
         tests:
           - not_null
           - unique
+  
+  - name: stg_product_category
+    description: "Staging da tabela production_productcategory (Categorias de produtos)."
+    columns:
+      - name: productcategoryid
+        description: "Identificador único da categoria de produto."
+        tests:
+          - not_null
+          - unique
+      - name: name
+        description: "Nome da categoria do produto."
+
+  - name: stg_product_subcategory
+    description: "Staging da tabela production_productsubcategory (Subcategorias de produtos)."
+    columns:
+      - name: productsubcategoryid
+        description: "Identificador único da subcategoria de produto."
+        tests:
+          - not_null
+          - unique
+      - name: productcategoryid
+        description: "Chave estrangeira para a categoria pai."
+        tests:
+          - not_null
+      - name: name
+        description: "Nome da subcategoria do produto."
