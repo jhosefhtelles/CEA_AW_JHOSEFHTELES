@@ -1,0 +1,118 @@
+version: 2
+
+models:
+  - name: stg_sales_order_header
+    description: "Staging da tabela sales_salesorderheader."
+    columns:
+      - name: salesorderid
+        description: "Identificador unico do pedido de venda."
+        tests:
+          - not_null
+          - unique
+
+  - name: stg_sales_order_detail
+    description: "Staging da tabela sales_salesorderdetail."
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns:
+              - salesorderid
+              - salesorderdetailid
+    columns:
+      - name: salesorderid
+        description: "Identificador do pedido de venda."
+        tests:
+          - not_null
+      - name: salesorderdetailid
+        description: "Identificador do item do pedido."
+        tests:
+          - not_null
+
+  - name: stg_customer
+    description: "Staging da tabela sales_customer."
+    columns:
+      - name: customerid
+        description: "Identificador unico do cliente."
+        tests:
+          - not_null
+          - unique
+
+  - name: stg_credit_card
+    description: "Staging da tabela sales_creditcard."
+    columns:
+      - name: creditcardid
+        description: "Identificador unico do cartao de credito."
+        tests:
+          - not_null
+          - unique
+
+  - name: stg_sales_reason
+    description: "Staging da tabela sales_salesreason."
+    columns:
+      - name: salesreasonid
+        description: "Identificador unico do motivo de venda."
+        tests:
+          - not_null
+          - unique
+
+  - name: stg_sales_order_header_sales_reason
+    description: "Staging da tabela sales_salesorderheadersalesreason."
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns:
+              - salesorderid
+              - salesreasonid
+    columns:
+      - name: salesorderid
+        description: "Identificador do pedido de venda."
+        tests:
+          - not_null
+      - name: salesreasonid
+        description: "Identificador do motivo de venda."
+        tests:
+          - not_null
+
+  - name: stg_person
+    description: "Staging da tabela person_person."
+    columns:
+      - name: businessentityid
+        description: "Identificador unico da pessoa."
+        tests:
+          - not_null
+          - unique
+
+  - name: stg_address
+    description: "Staging da tabela person_address."
+    columns:
+      - name: addressid
+        description: "Identificador unico do endereco."
+        tests:
+          - not_null
+          - unique
+
+  - name: stg_state_province
+    description: "Staging da tabela person_stateprovince."
+    columns:
+      - name: stateprovinceid
+        description: "Identificador unico do estado/provincia."
+        tests:
+          - not_null
+          - unique
+
+  - name: stg_country_region
+    description: "Staging da tabela person_countryregion."
+    columns:
+      - name: countryregioncode
+        description: "Codigo unico do pais/regiao."
+        tests:
+          - unique
+
+  - name: stg_product
+    description: "Staging da tabela production_product."
+    columns:
+      - name: productid
+        description: "Identificador unico do produto."
+        tests:
+          - not_null
+          - unique

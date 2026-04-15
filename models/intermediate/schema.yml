@@ -1,0 +1,30 @@
+version: 2
+
+models:
+  - name: int_cliente
+    description: "Modelo intermediario com atributos cadastrais do cliente e ultima compra."
+    columns:
+      - name: customerid
+        description: "Identificador do cliente."
+        tests:
+          - not_null
+          - unique
+
+  - name: int_transacoes
+    description: "Modelo intermediario de transacoes com itens de pedido e motivo de venda."
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns:
+              - salesorderid
+              - salesorderdetailid
+              - salesreasonid
+    columns:
+      - name: salesorderid
+        description: "Identificador do pedido."
+        tests:
+          - not_null
+      - name: salesorderdetailid
+        description: "Identificador do item do pedido."
+        tests:
+          - not_null

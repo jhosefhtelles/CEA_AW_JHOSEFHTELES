@@ -1,0 +1,73 @@
+version: 2
+
+models:
+  - name: d_produtos
+    description: "Dimensao de produtos."
+    columns:
+      - name: sk_produto
+        tests:
+          - not_null
+          - unique
+
+  - name: d_clientes
+    description: "Dimensao de clientes."
+    columns:
+      - name: sk_cliente
+        tests:
+          - not_null
+          - unique
+
+  - name: d_localidades
+    description: "Dimensao de localidades."
+    columns:
+      - name: sk_localidade
+        tests:
+          - not_null
+          - unique
+
+  - name: d_cartoes
+    description: "Dimensao de cartoes."
+    columns:
+      - name: sk_cartao
+        tests:
+          - not_null
+          - unique
+
+  - name: d_motivo_venda
+    description: "Dimensao de motivos de venda."
+    columns:
+      - name: sk_motivo
+        tests:
+          - not_null
+          - unique
+
+  - name: d_datas
+    description: "Dimensao calendario."
+    columns:
+      - name: data_dia
+        tests:
+          - not_null
+          - unique
+
+  - name: f_vendas
+    description: "Fato de vendas no nivel item de pedido e motivo."
+    columns:
+      - name: sk_venda
+        tests:
+          - not_null
+          - unique
+      - name: id_pedido
+        tests:
+          - not_null
+      - name: fk_produto
+        tests:
+          - relationships:
+              arguments:
+                to: ref('d_produtos')
+                field: sk_produto
+      - name: fk_cliente
+        tests:
+          - relationships:
+              arguments:
+                to: ref('d_clientes')
+                field: sk_cliente

@@ -1,0 +1,28 @@
+version: 2
+
+sources:
+  - name: adventure_works
+    description: "Fonte raw do Adventure Works no Databricks."
+    tables:
+      - name: sales_salesorderheader
+        description: "Cabecalho dos pedidos de venda."
+      - name: sales_salesorderdetail
+        description: "Itens dos pedidos de venda."
+      - name: sales_customer
+        description: "Cadastro de clientes."
+      - name: sales_creditcard
+        description: "Cadastro de cartoes de credito."
+      - name: sales_salesreason
+        description: "Motivos de venda."
+      - name: sales_salesorderheadersalesreason
+        description: "Relacao entre pedido e motivo de venda."
+      - name: person_person
+        description: "Cadastro de pessoas."
+      - name: person_address
+        description: "Cadastro de enderecos."
+      - name: person_stateprovince
+        description: "Cadastro de estados e provincias."
+      - name: person_countryregion
+        description: "Cadastro de paises e regioes."
+      - name: production_product
+        description: "Cadastro de produtos."
