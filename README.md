@@ -49,10 +49,12 @@ O relatório final foi desenvolvido no Power BI, conectando-se diretamente às t
 ### 4. Apresentação do Projeto (Vídeo)
 Vídeo demonstrativo com a explicação técnica de ponta a ponta.
 
-* <img src="https://upload.wikimedia.org/wikipedia/commons/1/12/Google_Drive_icon_%282020%29.svg" width="20" height="20"> [**Assistir Apresentação no Google Drive**](https://drive.google.com/file/d/11KFz26PQTgDbiXu7LayVQjygE3L9wB5G/view?usp=sharing)
+<video src="./Apresentacao_Projeto.mp4" width="100%" controls></video>
+
+* <img src="https://upload.wikimedia.org/wikipedia/commons/1/12/Google_Drive_icon_%282020%29.svg" width="20" height="20"> [**Assistir Apresentação no Google Drive**](https://drive.google.com/file/d/1S9v4zUPKd2FeNlXs9OCfzrqjYEsDe8g-/view?usp=sharing)
 * 📥 [**Download Alternativo (Caso o vídeo não carregue no navegador)**](./Apresentacao_Projeto.mp4)
 
-> **Nota:** O GitHub possui limitações para reprodução de vídeos diretamente no README. Caso não consiga assistir pelo link do Drive, utilize o link de download acima para assistir ao vídeo localmente.
+> **Nota:** O GitHub suporta a reprodução de vídeos diretamente no README através da tag acima, mas o desempenho pode variar dependendo do navegador. Caso tenha problemas, utilize o link do Google Drive ou o download local.
 
 ---
 
@@ -62,3 +64,5 @@ A confiança nos dados é garantida através de testes automatizados:
 * **Testes de Unicidade e Nulidade:** Aplicados em todas as chaves primárias.
 * **Integridade Referencial:** Testes de `relationships` na tabela fato.
 * **Auditoria Financeira:** Teste customizado `verifica_soma_vendas_2011` para validação de faturamento anual ($ 12.646.112,16).
+
+---
