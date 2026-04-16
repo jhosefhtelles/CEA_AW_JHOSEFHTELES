@@ -2,29 +2,69 @@ version: 2
 
 models:
   - name: int_cliente
-    description: "Modelo intermediario com atributos cadastrais do cliente e ultima compra."
+    description: "Modelo que consolida os dados cadastrais da pessoa com seus endereços e localizações geográficas."
     columns:
       - name: customerid
-        description: "Identificador do cliente."
+        description: "Chave primária do cliente."
         tests:
           - not_null
           - unique
+      - name: businessentityid
+        description: "ID da entidade de negócio que liga o cliente aos dados da pessoa (stg_person)."
+      - name: firstname
+        description: "Primeiro nome do cliente."
+      - name: lastname
+        description: "Sobrenome do cliente."
+      - name: addressid
+        description: "Identificador do endereço associado ao cliente."
+      - name: city
+        description: "Nome da cidade."
+      - name: stateprovince_name
+        description: "Nome completo do estado ou província."
+      - name: countryregion_name
+        description: "Nome completo do país ou região."
+      - name: territoryid
+        description: "ID do território de vendas associado ao cliente."
 
   - name: int_transacoes
-    description: "Modelo intermediario de transacoes com itens de pedido e motivo de venda."
+    description: "Modelo que une ordens de venda (Header), detalhes (Detail) e motivos (Reason), calculando métricas financeiras."
     tests:
       - dbt_utils.unique_combination_of_columns:
-          arguments:
+          arguments: # Adicionado para corrigir o warning
             combination_of_columns:
               - salesorderid
               - salesorderdetailid
               - salesreasonid
     columns:
       - name: salesorderid
-        description: "Identificador do pedido."
+        description: "ID da ordem de venda."
         tests:
           - not_null
       - name: salesorderdetailid
-        description: "Identificador do item do pedido."
+        description: "ID do item específico dentro da ordem."
         tests:
           - not_null
+      - name: salesreasonid
+        description: "ID do motivo da venda (pode ser nulo ou repetido por item)."
+      - name: productid
+        description: "ID do produto vendido."
+      - name: customerid
+        description: "ID do cliente que realizou a compra."
+      - name: creditcardid
+        description: "ID do cartão de crédito utilizado."
+      - name: orderdate
+        description: "Data em que a transação ocorreu."
+      - name: status_pedido
+        description: "Status traduzido ou mapeado do pedido."
+      - name: quantidade_comprada
+        description: "Quantidade de itens (OrderQty)."
+      - name: unitprice
+        description: "Preço unitário do produto."
+      - name: unitpricediscount
+        description: "Desconto aplicado por unidade."
+      - name: valor_bruto
+        description: "Valor total da linha sem descontos (Qtd * Preço Unitário)."
+      - name: valor_liquido
+        description: "Valor total da linha considerando o desconto (Bruto * (1 - Desconto))."
+      - name: salesreason_name
+        description: "Descrição do motivo da venda (ex: On Promotion, Television Advertisement)."

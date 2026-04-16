@@ -7,6 +7,7 @@ with
         from {{ ref('int_cliente') }}
         where city is not null
     )
+
 select
     {{
         dbt_utils.generate_surrogate_key(

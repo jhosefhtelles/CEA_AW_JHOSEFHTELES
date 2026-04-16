@@ -2,31 +2,108 @@ version: 2
 
 sources:
   - name: adventure_works
-    description: "Fonte raw do Adventure Works no Databricks."
+    description: "Fonte raw do Adventure Works no Databricks (Camada Bronze)."
     tables:
       - name: sales_salesorderheader
-        description: "Cabecalho dos pedidos de venda."
+        description: "Cabeçalho dos pedidos de venda contendo informações de frete, datas e IDs de clientes."
+        columns:
+          - name: salesorderid
+            description: "Chave primária do pedido."
+          - name: customerid
+            description: "FK para a tabela de clientes."
+          - name: creditcardid
+            description: "FK para a tabela de cartões de crédito."
+
       - name: sales_salesorderdetail
-        description: "Itens dos pedidos de venda."
+        description: "Itens individuais de cada pedido de venda."
+        columns:
+          - name: salesorderid
+            description: "FK para o cabeçalho do pedido."
+          - name: salesorderdetailid
+            description: "ID único da linha do item no pedido."
+          - name: productid
+            description: "FK para a tabela de produtos."
+
       - name: sales_customer
-        description: "Cadastro de clientes."
+        description: "Relaciona clientes a pessoas e territórios."
+        columns:
+          - name: customerid
+            description: "Chave primária do cliente."
+          - name: personid
+            description: "FK para a tabela person_person."
+
       - name: sales_creditcard
-        description: "Cadastro de cartoes de credito."
+        description: "Informações de cartões de crédito usados nas transações."
+        columns:
+          - name: creditcardid
+            description: "Chave primária do cartão."
+          - name: cardtype
+            description: "Bandeira do cartão."
+
       - name: sales_salesreason
-        description: "Motivos de venda."
+        description: "Catálogo de motivos de venda (ex: Marketing, Promoção)."
+        columns:
+          - name: salesreasonid
+            description: "Chave primária do motivo."
+
       - name: sales_salesorderheadersalesreason
-        description: "Relacao entre pedido e motivo de venda."
+        description: "Tabela de junção entre pedidos e seus respectivos motivos."
+        columns:
+          - name: salesorderid
+            description: "Chave composta - Parte 1."
+          - name: salesreasonid
+            description: "Chave composta - Parte 2."
+
       - name: person_person
-        description: "Cadastro de pessoas."
+        description: "Dados cadastrais de pessoas físicas (clientes, funcionários, etc.)."
+        columns:
+          - name: businessentityid
+            description: "Chave primária da pessoa."
+          - name: firstname
+            description: "Primeiro nome."
+          - name: lastname
+            description: "Sobrenome."
+
       - name: person_address
-        description: "Cadastro de enderecos."
+        description: "Logradouros e localizações."
+        columns:
+          - name: addressid
+            description: "Chave primária do endereço."
+          - name: stateprovinceid
+            description: "FK para estados e províncias."
+
       - name: person_stateprovince
-        description: "Cadastro de estados e provincias."
+        description: "Divisões territoriais (Estados/Províncias)."
+        columns:
+          - name: stateprovinceid
+            description: "Chave primária do estado."
+          - name: countryregioncode
+            description: "FK para países."
+
       - name: person_countryregion
-        description: "Cadastro de paises e regioes."
+        description: "Catálogo global de países e regiões."
+        columns:
+          - name: countryregioncode
+            description: "Código único do país."
+
       - name: production_product
-        description: "Cadastro de produtos."
+        description: "Catálogo completo de produtos vendidos."
+        columns:
+          - name: productid
+            description: "Chave primária do produto."
+          - name: productsubcategoryid
+            description: "FK para subcategorias."
+
       - name: production_productcategory
-        description: "Categoria de produtos."
+        description: "Categorias de alto nível (ex: Bikes, Accessories)."
+        columns:
+          - name: productcategoryid
+            description: "Chave primária da categoria."
+
       - name: production_productsubcategory
-        description: "Subcategoria de produtos."
+        description: "Subcategorias detalhadas (ex: Mountain Bikes, Road Bikes)."
+        columns:
+          - name: productsubcategoryid
+            description: "Chave primária da subcategoria."
+          - name: productcategoryid
+            description: "FK para a categoria pai."

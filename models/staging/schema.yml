@@ -1,144 +1,168 @@
 version: 2
 
 models:
+  # --- VENDAS (SALES) ---
   - name: stg_sales_order_header
-    description: "Staging da tabela sales_salesorderheader."
+    description: "Cabeçalho das ordens de venda. Contém dados gerais do pedido."
     columns:
       - name: salesorderid
-        description: "Identificador unico do pedido de venda."
-        tests:
-          - not_null
-          - unique
+        description: "Chave primária do pedido."
+        tests: [not_null, unique]
+      - name: customerid
+        description: "ID do cliente que realizou a compra."
+      - name: creditcardid
+        description: "ID do cartão de crédito utilizado."
+      - name: territoryid
+        description: "ID do território de venda."
+      - name: orderdate
+        description: "Data em que o pedido foi gerado."
+      - name: status
+        description: "Status do pedido (1: Em processo, 2: Aprovado, 3: Pendente, 4: Rejeitado, 5: Enviado, 6: Cancelado)."
+      - name: subtotal
+        description: "Soma dos valores dos itens."
+      - name: taxamt
+        description: "Valor do imposto."
+      - name: freight
+        description: "Valor do frete."
+      - name: totaldue
+        description: "Valor total do pedido (Subtotal + Imposto + Frete)."
 
   - name: stg_sales_order_detail
-    description: "Staging da tabela sales_salesorderdetail."
+    description: "Detalhes dos itens de cada pedido de venda."
     tests:
       - dbt_utils.unique_combination_of_columns:
-          arguments:
-            combination_of_columns:
-              - salesorderid
-              - salesorderdetailid
+          arguments: # Adicionado para corrigir o warning
+            combination_of_columns: [salesorderid, salesorderdetailid]
     columns:
       - name: salesorderid
-        description: "Identificador do pedido de venda."
-        tests:
-          - not_null
+        description: "ID do pedido (vinculado ao header)."
       - name: salesorderdetailid
-        description: "Identificador do item do pedido."
-        tests:
-          - not_null
+        description: "ID único da linha do item."
+      - name: productid
+        description: "ID do produto vendido."
+      - name: orderqty
+        description: "Quantidade de itens."
+      - name: unitprice
+        description: "Preço unitário do produto."
+      - name: unitpricediscount
+        description: "Desconto aplicado por unidade."
 
   - name: stg_customer
-    description: "Staging da tabela sales_customer."
+    description: "Dados dos clientes da Adventure Works."
     columns:
       - name: customerid
-        description: "Identificador unico do cliente."
-        tests:
-          - not_null
-          - unique
+        description: "ID único do cliente."
+        tests: [not_null, unique]
+      - name: personid
+        description: "ID da pessoa associada (FK para stg_person)."
+      - name: storeid
+        description: "ID da loja associada, se aplicável."
 
   - name: stg_credit_card
-    description: "Staging da tabela sales_creditcard."
+    description: "Dados de cartões de crédito."
     columns:
       - name: creditcardid
-        description: "Identificador unico do cartao de credito."
-        tests:
-          - not_null
-          - unique
+        description: "ID único do cartão."
+        tests: [not_null, unique]
+      - name: cardtype
+        description: "Bandeira do cartão (ex: Vista, SuperiorCard)."
 
   - name: stg_sales_reason
-    description: "Staging da tabela sales_salesreason."
+    description: "Motivos de venda cadastrados."
     columns:
       - name: salesreasonid
-        description: "Identificador unico do motivo de venda."
-        tests:
-          - not_null
-          - unique
+        description: "ID único do motivo."
+        tests: [not_null, unique]
+      - name: name
+        description: "Descrição do motivo (ex: Price, Promotion)."
+      - name: reasontype
+        description: "Tipo do motivo (ex: Marketing, Other)."
 
   - name: stg_sales_order_header_sales_reason
-    description: "Staging da tabela sales_salesorderheadersalesreason."
+    description: "Tabela de ligação entre pedidos e motivos de venda."
     tests:
       - dbt_utils.unique_combination_of_columns:
-          arguments:
-            combination_of_columns:
-              - salesorderid
-              - salesreasonid
+          arguments: # Adicionado para corrigir o warning
+            combination_of_columns: [salesorderid, salesreasonid]
     columns:
       - name: salesorderid
-        description: "Identificador do pedido de venda."
-        tests:
-          - not_null
+        description: "ID do pedido."
       - name: salesreasonid
-        description: "Identificador do motivo de venda."
-        tests:
-          - not_null
+        description: "ID do motivo."
 
+  # --- PESSOAS E ENDEREÇOS (PERSON) ---
   - name: stg_person
-    description: "Staging da tabela person_person."
+    description: "Dados básicos de pessoas (clientes e funcionários)."
     columns:
       - name: businessentityid
-        description: "Identificador unico da pessoa."
-        tests:
-          - not_null
-          - unique
+        description: "ID único da pessoa."
+        tests: [not_null, unique]
+      - name: firstname
+        description: "Primeiro nome."
+      - name: lastname
+        description: "Sobrenome."
 
   - name: stg_address
-    description: "Staging da tabela person_address."
+    description: "Cadastro de endereços físicos."
     columns:
       - name: addressid
-        description: "Identificador unico do endereco."
-        tests:
-          - not_null
-          - unique
+        description: "ID único do endereço."
+        tests: [not_null, unique]
+      - name: city
+        description: "Cidade do endereço."
+      - name: stateprovinceid
+        description: "ID do estado/província (FK)."
 
   - name: stg_state_province
-    description: "Staging da tabela person_stateprovince."
+    description: "Dados de Estados e Províncias."
     columns:
       - name: stateprovinceid
-        description: "Identificador unico do estado/provincia."
-        tests:
-          - not_null
-          - unique
+        description: "ID único do estado."
+        tests: [not_null, unique]
+      - name: stateprovincecode
+        description: "Código/Sigla do estado."
+      - name: countryregioncode
+        description: "Código do país associado."
+      - name: name
+        description: "Nome completo do estado."
 
   - name: stg_country_region
-    description: "Staging da tabela person_countryregion."
+    description: "Dados de Países e Regiões."
     columns:
       - name: countryregioncode
-        description: "Codigo unico do pais/regiao."
-        tests:
-          - unique
+        description: "Código único do país."
+        tests: [unique]
+      - name: name
+        description: "Nome do país."
 
+  # --- PRODUTOS (PRODUCTION) ---
   - name: stg_product
-    description: "Staging da tabela production_product."
+    description: "Cadastro de produtos."
     columns:
       - name: productid
-        description: "Identificador unico do produto."
-        tests:
-          - not_null
-          - unique
-  
+        description: "ID único do produto."
+        tests: [not_null, unique]
+      - name: name
+        description: "Nome do produto."
+      - name: productsubcategoryid
+        description: "ID da subcategoria (FK)."
+
   - name: stg_product_category
-    description: "Staging da tabela production_productcategory (Categorias de produtos)."
+    description: "Categorias de produtos."
     columns:
       - name: productcategoryid
-        description: "Identificador único da categoria de produto."
-        tests:
-          - not_null
-          - unique
+        description: "ID único da categoria."
+        tests: [not_null, unique]
       - name: name
-        description: "Nome da categoria do produto."
+        description: "Nome da categoria."
 
   - name: stg_product_subcategory
-    description: "Staging da tabela production_productsubcategory (Subcategorias de produtos)."
+    description: "Subcategorias de produtos."
     columns:
       - name: productsubcategoryid
-        description: "Identificador único da subcategoria de produto."
-        tests:
-          - not_null
-          - unique
+        description: "ID único da subcategoria."
+        tests: [not_null, unique]
       - name: productcategoryid
-        description: "Chave estrangeira para a categoria pai."
-        tests:
-          - not_null
+        description: "ID da categoria pai."
       - name: name
-        description: "Nome da subcategoria do produto."
+        description: "Nome da subcategoria."

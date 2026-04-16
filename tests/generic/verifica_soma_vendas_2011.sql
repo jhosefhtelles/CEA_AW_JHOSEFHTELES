@@ -5,7 +5,6 @@
             -- Faz a soma direta (SUM) da coluna valor_bruto
             round(cast(sum({{ column_name }}) as numeric), 2) as total_bruto
         from {{ model }}
-        -- Certifique-se de que a coluna de data na f_vendas se chama realmente data_venda
         where extract(year from data_venda) = 2011
     )
 

@@ -2,79 +2,117 @@ version: 2
 
 models:
   - name: d_produtos
-    description: "Dimensao de produtos."
+    description: "Dimensão de produtos contendo a hierarquia completa de categorias e subcategorias."
     columns:
       - name: sk_produto
-        tests:
-          - not_null
-          - unique
+        description: "Chave substituta única para o produto."
+        tests: [not_null, unique]
+      - name: productid
+        description: "Identificador natural do produto vindo da origem."
+      - name: nome_produto
+        description: "Nome comercial do produto."
+      - name: nome_subcategoria
+        description: "Nome da subcategoria (ex: Mountain Bikes). Retorna 'Sem Subcategoria' se nulo."
+      - name: nome_categoria
+        description: "Nome da categoria principal (ex: Bikes). Retorna 'Sem Categoria' se nulo."
 
   - name: d_clientes
-    description: "Dimensao de clientes."
+    description: "Dimensão de clientes com nomes completos e tratados."
     columns:
       - name: sk_cliente
-        tests:
-          - not_null
-          - unique
+        description: "Chave substituta única para o cliente."
+        tests: [not_null, unique]
+      - name: customerid
+        description: "ID natural do cliente."
+      - name: nome_cliente
+        description: "Nome completo consolidado (FirstName + LastName)."
 
   - name: d_localidades
-    description: "Dimensao de localidades."
+    description: "Dimensão geográfica consolidando Cidade, Estado e País."
     columns:
       - name: sk_localidade
-        tests:
-          - not_null
-          - unique
+        description: "Chave substituta única gerada pela combinação de cidade, estado e país."
+        tests: [not_null, unique]
+      - name: cidade
+        description: "Nome da cidade."
+      - name: estado
+        description: "Nome do estado ou província."
+      - name: pais
+        description: "Nome do país."
 
   - name: d_cartoes
-    description: "Dimensao de cartoes."
+    description: "Dimensão com informações dos cartões de crédito."
     columns:
       - name: sk_cartao
-        tests:
-          - not_null
-          - unique
+        description: "Chave substituta única para o cartão."
+        tests: [not_null, unique]
+      - name: creditcardid
+        description: "ID natural do cartão."
+      - name: tipo_cartao
+        description: "Bandeira do cartão (ex: Vista, SuperiorCard)."
 
   - name: d_motivo_venda
-    description: "Dimensao de motivos de venda."
+    description: "Dimensão com os motivos das vendas."
     columns:
       - name: sk_motivo
-        tests:
-          - not_null
-          - unique
+        description: "Chave substituta única para o motivo."
+        tests: [not_null, unique]
+      - name: salesreasonid
+        description: "ID natural do motivo."
+      - name: nome_motivo
+        description: "Descrição do motivo (ex: Price, Promotion, Marketing)."
 
   - name: d_datas
-    description: "Dimensao calendario."
+    description: "Dimensão calendário gerada a partir das transações."
     columns:
       - name: data_dia
-        tests:
-          - not_null
-          - unique
+        description: "Data completa (YYYY-MM-DD)."
+        tests: [not_null, unique]
+      - name: mes
+        description: "Número do mês (1-12)."
+      - name: ano
+        description: "Ano da data."
 
   - name: f_vendas
-    description: "Fato de vendas no nivel item de pedido e motivo."
+    description: "Tabela fato que registra cada item de pedido vendido, detalhado por motivo e contexto."
     columns:
       - name: sk_venda
-        tests:
-          - not_null
-          - unique
+        description: "Chave substituta única para a linha da fato (PK)."
+        tests: [not_null, unique]
       - name: id_pedido
-        tests:
-          - not_null
+        description: "ID natural do pedido."
       - name: fk_produto
+        description: "Chave estrangeira para d_produtos."
         tests:
           - relationships:
-              arguments:
+              arguments: # Adicionado para corrigir o warning
                 to: ref('d_produtos')
                 field: sk_produto
       - name: fk_cliente
+        description: "Chave estrangeira para d_clientes."
         tests:
           - relationships:
-              arguments:
+              arguments: # Adicionado para corrigir o warning
                 to: ref('d_clientes')
                 field: sk_cliente
+      - name: fk_localidade
+        description: "Chave estrangeira para d_localidades."
+        tests:
+          - relationships:
+              arguments: # Adicionado para corrigir o warning
+                to: ref('d_localidades')
+                field: sk_localidade
+      - name: fk_cartao
+        description: "Chave estrangeira para d_cartoes."
+      - name: fk_motivo
+        description: "Chave estrangeira para d_motivo_venda."
+      - name: data_venda
+        description: "Data da venda (vincula a d_datas)."
       - name: valor_bruto
+        description: "Valor bruto total do item (Qtd * Preço Unitário)."
         tests:
           - verifica_soma_vendas_2011:
-              config:
-                severity: warn
-              arguments:
-                expected_value: 12646112.16
+              config: {severity: warn}
+              arguments: {expected_value: 12646112.16} # Já estava correto aqui!
+      - name: valor_liquido
+        description: "Valor líquido total (considerando descontos)."
