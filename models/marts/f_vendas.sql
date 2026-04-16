@@ -7,6 +7,7 @@ with
         select *
         from {{ ref('int_cliente') }}
     )
+
 select
     {{
         dbt_utils.generate_surrogate_key(
