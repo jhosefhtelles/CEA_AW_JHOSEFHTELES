@@ -35,7 +35,8 @@ select
     , transacoes.quantidade_comprada
     , transacoes.valor_bruto
     , transacoes.valor_liquido
-    -- Trazemos o nome do motivo como um atributo da fato (Degenerate Dimension)
+    , {{ dbt_utils.generate_surrogate_key(['transacoes.salesreason_name']) }} as fk_motivo
+    -- Mantemos o texto também caso queira usar direto (Dimensão Degenerada)
     , transacoes.salesreason_name as motivo_venda
 from transacoes
 left join cliente
