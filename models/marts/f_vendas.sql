@@ -14,7 +14,6 @@ select
             [
                 "cast(transacoes.salesorderid as string)"
                 , "cast(transacoes.salesorderdetailid as string)"
-                , "coalesce(cast(transacoes.salesreasonid as string), '')"
             ]
         )
     }} as sk_venda
@@ -31,12 +30,13 @@ select
         )
     }} as fk_localidade
     , {{ dbt_utils.generate_surrogate_key(['cast(transacoes.creditcardid as string)']) }} as fk_cartao
-    , {{ dbt_utils.generate_surrogate_key(['cast(transacoes.salesreasonid as string)']) }} as fk_motivo
     , cast(transacoes.orderdate as date) as data_venda
     , transacoes.status_pedido
     , transacoes.quantidade_comprada
     , transacoes.valor_bruto
     , transacoes.valor_liquido
+    -- Trazemos o nome do motivo como um atributo da fato (Degenerate Dimension)
+    , transacoes.salesreason_name as motivo_venda
 from transacoes
 left join cliente
     on transacoes.customerid = cliente.customerid

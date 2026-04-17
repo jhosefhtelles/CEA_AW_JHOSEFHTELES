@@ -34,7 +34,7 @@ models:
             combination_of_columns:
               - salesorderid
               - salesorderdetailid
-              - salesreasonid
+              # - salesreasonid
     columns:
       - name: salesorderid
         description: "ID da ordem de venda."

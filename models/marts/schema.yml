@@ -112,7 +112,7 @@ models:
         description: "Valor bruto total do item (Qtd * Preço Unitário)."
         tests:
           - verifica_soma_vendas_2011:
-              config: {severity: warn}
-              arguments: {expected_value: 12646112.16} # Já estava correto aqui!
+              arguments: 
+                expected_value: 12646112.16
       - name: valor_liquido
         description: "Valor líquido total (considerando descontos)."

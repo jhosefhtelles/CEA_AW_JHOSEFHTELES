@@ -15,6 +15,17 @@ with
         select *
         from {{ ref('stg_sales_reason') }}
     )
+    -- Agregando os motivos para evitar duplicidade (Fan-out)
+    , logica_motivos as (
+        select
+            bridge.salesorderid
+            , string_agg(sr.name, ', ') as salesreason_name
+        from sales_order_reason_bridge bridge
+        left join sales_reason sr
+            on bridge.salesreasonid = sr.salesreasonid
+        group by bridge.salesorderid
+    )
+
 select
     sales_order_detail.salesorderid
     , sales_order_detail.salesorderdetailid
@@ -38,13 +49,10 @@ select
         * sales_order_detail.unitprice
         * (1 - sales_order_detail.unitpricediscount)
     ) as valor_liquido
-    , sales_order_reason_bridge.salesreasonid
-    , sales_reason.name as salesreason_name
-    , sales_reason.reasontype as salesreason_type
+    -- Coluna agregada vinda da nova CTE
+    , logica_motivos.salesreason_name
 from sales_order_detail
 inner join sales_order_header
     on sales_order_detail.salesorderid = sales_order_header.salesorderid
-left join sales_order_reason_bridge
-    on sales_order_detail.salesorderid = sales_order_reason_bridge.salesorderid
-left join sales_reason
-    on sales_order_reason_bridge.salesreasonid = sales_reason.salesreasonid
+left join logica_motivos
+    on sales_order_detail.salesorderid = logica_motivos.salesorderid

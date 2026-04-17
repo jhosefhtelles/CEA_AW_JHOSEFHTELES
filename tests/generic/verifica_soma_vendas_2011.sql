@@ -1,16 +1,16 @@
 {% test verifica_soma_vendas_2011(model, column_name, expected_value) %}
 
-    with calculo_total as (
-        select
-            -- Faz a soma direta (SUM) da coluna valor_bruto
-            round(cast(sum({{ column_name }}) as numeric), 2) as total_bruto
-        from {{ model }}
-        where extract(year from data_venda) = 2011
-    )
+with calculo_soma as (
+    select
+        -- Arredondando a soma para 2 casas decimais para ignorar a sujeira do ponto flutuante
+        round(sum({{ column_name }}), 2) as total_vendas_2011
+    from {{ model }}
+    where extract(year from data_venda) = 2011
+)
 
-    -- O teste falha se a soma for diferente do esperado
-    select *
-    from calculo_total
-    where total_bruto != {{ expected_value }}
+select *
+from calculo_soma
+-- Compara a soma já arredondada com o valor esperado passado no YAML
+where total_vendas_2011 != {{ expected_value }}
 
 {% endtest %}
